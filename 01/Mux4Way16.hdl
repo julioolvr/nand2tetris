@@ -1,0 +1,110 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Mux4Way16.hdl
+
+/**
+ * 4-way 16-bit multiplexor:
+ * out = a if sel == 00
+ *       b if sel == 01
+ *       c if sel == 10
+ *       d if sel == 11
+ */
+
+CHIP Mux4Way16 {
+    IN a[16], b[16], c[16], d[16], sel[2];
+    OUT out[16];
+
+    PARTS:
+    Not(in=sel[1], out=notFirst);
+    Not(in=sel[0], out=notSecond);
+
+    And(a=notFirst, b=notSecond, out=sel00);
+    And(a=notFirst, b=sel[0], out=sel01);
+    And(a=sel[1], b=notSecond, out=sel10);
+    And(a=sel[1], b=sel[0], out=sel11);
+
+    And16(
+      a=a,
+      b[0]=sel00,
+      b[1]=sel00,
+      b[2]=sel00,
+      b[3]=sel00,
+      b[4]=sel00,
+      b[5]=sel00,
+      b[6]=sel00,
+      b[7]=sel00,
+      b[8]=sel00,
+      b[9]=sel00,
+      b[10]=sel00,
+      b[11]=sel00,
+      b[12]=sel00,
+      b[13]=sel00,
+      b[14]=sel00,
+      b[15]=sel00,
+      out=aSelected);
+
+    And16(
+      a=b,
+      b[0]=sel01,
+      b[1]=sel01,
+      b[2]=sel01,
+      b[3]=sel01,
+      b[4]=sel01,
+      b[5]=sel01,
+      b[6]=sel01,
+      b[7]=sel01,
+      b[8]=sel01,
+      b[9]=sel01,
+      b[10]=sel01,
+      b[11]=sel01,
+      b[12]=sel01,
+      b[13]=sel01,
+      b[14]=sel01,
+      b[15]=sel01,
+      out=bSelected);
+
+    And16(
+      a=c,
+      b[0]=sel10,
+      b[1]=sel10,
+      b[2]=sel10,
+      b[3]=sel10,
+      b[4]=sel10,
+      b[5]=sel10,
+      b[6]=sel10,
+      b[7]=sel10,
+      b[8]=sel10,
+      b[9]=sel10,
+      b[10]=sel10,
+      b[11]=sel10,
+      b[12]=sel10,
+      b[13]=sel10,
+      b[14]=sel10,
+      b[15]=sel10,
+      out=cSelected);
+
+    And16(
+      a=d,
+      b[0]=sel11,
+      b[1]=sel11,
+      b[2]=sel11,
+      b[3]=sel11,
+      b[4]=sel11,
+      b[5]=sel11,
+      b[6]=sel11,
+      b[7]=sel11,
+      b[8]=sel11,
+      b[9]=sel11,
+      b[10]=sel11,
+      b[11]=sel11,
+      b[12]=sel11,
+      b[13]=sel11,
+      b[14]=sel11,
+      b[15]=sel11,
+      out=dSelected);
+
+    Or16(a=aSelected, b=bSelected, out=aAndB);
+    Or16(a=cSelected, b=dSelected, out=cAndD);
+    Or16(a=aAndB, b=cAndD, out=out);
+}
