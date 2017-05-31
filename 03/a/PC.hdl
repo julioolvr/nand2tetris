@@ -11,10 +11,29 @@
  * else                    out[t+1] = out[t]
  */
 
+/*
+ in | load | inc | reset | out
+ ?  |  ?   |  ?  |   1   |  0
+ x  |  1   |  ?  |   0   |  x
+
+*/
+
 CHIP PC {
     IN in[16],load,inc,reset;
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+        // If any of the flags is true, I have to update the register value.
+        // Otherwise, just maintain the previous one.
+        Or(a=load, b=inc, out=loadReg1);
+        Or(a=loadReg1, b=reset, out=loadReg);
+
+        Register(in=regIn, load=loadReg, out=regOut);
+        Inc16(in=regOut, out=nextStep);
+
+        Mux16(a=regOut, b=nextStep, sel=inc, out=in0);
+        Mux16(a=in0, b=in, sel=load, out=in1);
+        Mux16(a=in1, b=false, sel=reset, out=regIn);
+
+        And16(a=regOut, b=true, out=out);
 }
