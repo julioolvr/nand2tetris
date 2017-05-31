@@ -13,5 +13,19 @@ CHIP FullAdder {
         carry;   // Left bit of a + b + c
 
     PARTS:
-    // Put you code here:
+    Not(in=a, out=notA);
+    Not(in=b, out=notB);
+    Not(in=c, out=notC);
+
+    // Sum the two LSB
+    HalfAdder(a=b, b=c, sum=halfSum, carry=halfCarry);
+    Not(in=halfSum, out=notHalfSum);
+    Not(in=halfCarry, out=notHalfCarry);
+
+    // Regular sum if !a, opposite if a
+    Mux(a=halfSum, b=notHalfSum, sel=a, out=sum);
+
+    // Carry when A = !(a && !b && !c) === !a || b || c
+    Or8Way(in[0]=notA, in[1]=b, in[2]=c, in[3..7]=false, out=secondCarry);
+    Mux(a=halfCarry, b=secondCarry, sel=a, out=carry);
 }
