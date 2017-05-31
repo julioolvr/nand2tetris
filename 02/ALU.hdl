@@ -64,5 +64,13 @@ CHIP ALU {
 
         // If no, set out to !out, and that's it
         Not16(in=preOut, out=notOut);
-        Mux16(a=preOut, b=notOut, sel=no, out=out);
+        Mux16(a=preOut, b=notOut, sel=no, out=result);
+
+        Mux16(a=result, b=result, sel=true, out=out);
+
+        // zx: Should be 1 if out == 0, otherwise 0
+        IsEq16(a=result, b=false, out=zr);
+
+        // ng: Should be 1 if negative (e.g. MSB is 1), 0 otherwise
+        Msb16(in=result, out=ng);
 }
