@@ -97,9 +97,8 @@ CHIP CPU {
         // It gets loaded if jumping
         // It gets reset if the reset input is 1
         // It increases otherwise
-        And(a=shouldJump, b=isCInstruction, out=isJumping);
-        And(a=reset, b=isCInstruction, out=isBeingReset);
-        PC(in=aOut, load=isJumping, inc=true, reset=isBeingReset, out[0..14]=pc);
+        And(a=shouldJump, b=isCInstruction, out=jumpInstruction);
+        PC(in=aOut, load=jumpInstruction, inc=true, reset=reset, out[0..14]=pc);
 
         // ALU
         // First input is the content of the D register
