@@ -40,7 +40,43 @@ fn dest_to_binary(dest: Option<&str>) -> u8 {
 }
 
 fn comp_to_binary(comp: Option<&str>) -> u8 {
-  0b1111111
+  if let Some(comp_string) = comp {
+    match comp_string {
+      "0"   => 0b00101010,
+      "1"   => 0b00111111,
+      "-1"  => 0b00111010,
+      "D"   => 0b00001100,
+      "A"   => 0b00110000,
+      "!D"  => 0b00001101,
+      "!A"  => 0b00110001,
+      "-D"  => 0b00001111,
+      "-A"  => 0b00110011,
+      "D+1" => 0b00011111,
+      "A+1" => 0b00110111,
+      "D-1" => 0b00001110,
+      "A-1" => 0b00110010,
+      "D+A" => 0b00000010,
+      "D-A" => 0b00010011,
+      "A-D" => 0b00000111,
+      "D&A" => 0b00000000,
+      "D|A" => 0b00010101,
+      "M"   => 0b01110000,
+      "!M"  => 0b01110001,
+      "-M"  => 0b01110011,
+      "M+1" => 0b01110111,
+      "M-1" => 0b01110010,
+      "D+M" => 0b01000010,
+      "D-M" => 0b01010011,
+      "M-D" => 0b01000111,
+      "D&M" => 0b01000000,
+      "D|M" => 0b01010101,
+      // TODO: Shouldn't happen, handle as an error
+      _     => 0b00000000
+    }
+  } else {
+    // TODO: Shouldn't happen, handle as an error
+    0b00000000
+  }
 }
 
 fn jump_to_binary(jump: Option<JumpMnemonic>) -> u8 {

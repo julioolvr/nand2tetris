@@ -27,3 +27,13 @@ AD=M
 AM=D
 DM=A
 ADM=A
+
+@123
+
+// Check comp
+A+1
+A-1
+D|A
+D|M
+D
+!A
