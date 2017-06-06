@@ -7,6 +7,7 @@ use std::io::BufReader;
 
 mod lib;
 use lib::parser::Parser;
+use lib::code::command_to_binary;
 
 fn main() {
     let mut args = env::args();
@@ -35,6 +36,8 @@ fn main() {
         if let Some(ref jump) = command.jump() {
             println!("Had jump {}", jump);
         }
+
+        println!("Binary representation is {}", command_to_binary(&command));
     }
 
     println!("Done parsing");
