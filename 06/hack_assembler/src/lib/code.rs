@@ -27,8 +27,16 @@ fn c_command_to_binary(command: &Command) -> String {
   format!("111{}{}{}", comp, dest, jump)
 }
 
-fn dest_to_binary(dest: Option<&str>) -> &str {
-  "000"
+fn dest_to_binary(dest: Option<&str>) -> String {
+  let mut dest_number = 0;
+
+  if let Some(dest_string) = dest {
+    if dest_string.contains("M") { dest_number = dest_number | 0b001 }
+    if dest_string.contains("D") { dest_number = dest_number | 0b010 }
+    if dest_string.contains("A") { dest_number = dest_number | 0b100 }
+  }
+
+  format!("{:03b}", dest_number)
 }
 
 fn comp_to_binary(comp: Option<&str>) -> &str {
