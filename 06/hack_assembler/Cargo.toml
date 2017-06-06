@@ -1,0 +1,8 @@
+[package]
+name = "hack_assembler"
+version = "0.1.0"
+authors = ["Julio Olivera <julio.olvr@gmail.com>"]
+
+[dependencies]
+regex = "0.2"
+lazy_static = "0.2.8"
