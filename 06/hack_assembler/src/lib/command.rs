@@ -33,7 +33,7 @@ lazy_static! {
   // dest=comp;jump
   // if `dest` is empty, `=` is ommited
   // if `jump` is empty, `;` is ommited
-  static ref C_COMMAND_REGEX: Regex = Regex::new(r"^(?:(\w+)=)?([\w||\||&|+|-|!]+)(?:;(\w+))?$").unwrap();
+  static ref C_COMMAND_REGEX: Regex = Regex::new(r"^(?:(\w+)=)?([\w|\||&|+|\-|!]+)(?:;(\w+))?$").unwrap();
 }
 
 
