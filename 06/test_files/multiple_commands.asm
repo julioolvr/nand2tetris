@@ -10,5 +10,8 @@ D=M
 
 @456
 
-
+A=D
 A=D;JEQ
+A=D;JMP
+A=D;JGT
+A=D;JLE

@@ -11,6 +11,16 @@ pub enum CommandType {
   LCommand
 }
 
+pub enum JumpMnemonic {
+  JGT,
+  JEQ,
+  JGE,
+  JLT,
+  JNE,
+  JLE,
+  JMP
+}
+
 lazy_static! {
   // A-instruction regex
   // Structure:
@@ -54,8 +64,21 @@ impl Command {
     Command::extract_capture(self.c_command_captures(), 2)
   }
 
-  pub fn jump(&self) -> Option<&str> {
-    Command::extract_capture(self.c_command_captures(), 3)
+  pub fn jump(&self) -> Option<JumpMnemonic> {
+    if let Some(mnemonic) = Command::extract_capture(self.c_command_captures(), 3) {
+      match mnemonic {
+        "JGT" => Some(JumpMnemonic::JGT),
+        "JEQ" => Some(JumpMnemonic::JEQ),
+        "JGE" => Some(JumpMnemonic::JGE),
+        "JLT" => Some(JumpMnemonic::JLT),
+        "JNE" => Some(JumpMnemonic::JNE),
+        "JLE" => Some(JumpMnemonic::JLE),
+        "JMP" => Some(JumpMnemonic::JMP),
+        _ => None
+      }
+    } else {
+      None
+    }
   }
 
   pub fn is_command(line: &String) -> bool {

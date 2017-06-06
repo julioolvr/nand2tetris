@@ -1,5 +1,6 @@
 use lib::command::Command;
 use lib::command::CommandType;
+use lib::command::JumpMnemonic;
 
 pub fn command_to_binary(command: &Command) -> String {
   match command.command_type() {
@@ -34,6 +35,20 @@ fn comp_to_binary(comp: Option<&str>) -> &str {
   "1111111"
 }
 
-fn jump_to_binary(jump: Option<&str>) -> &str {
-  "000"
+fn jump_to_binary(jump: Option<JumpMnemonic>) -> &'static str {
+  match jump {
+    Some(mnemonic) => {
+      match mnemonic {
+        JumpMnemonic::JGT => "001",
+        JumpMnemonic::JEQ => "010",
+        JumpMnemonic::JGE => "011",
+        JumpMnemonic::JLT => "100",
+        JumpMnemonic::JNE => "101",
+        JumpMnemonic::JLE => "110",
+        JumpMnemonic::JMP => "111"
+      }
+    }
+
+    None => "000"
+  }
 }

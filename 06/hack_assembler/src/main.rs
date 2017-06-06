@@ -33,10 +33,6 @@ fn main() {
             println!("Had comp {}", comp);
         }
 
-        if let Some(ref jump) = command.jump() {
-            println!("Had jump {}", jump);
-        }
-
         println!("Binary representation is {}", command_to_binary(&command));
     }
 
