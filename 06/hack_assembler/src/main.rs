@@ -33,7 +33,7 @@ fn main() {
             println!("Had comp {}", comp);
         }
 
-        println!("Binary representation is {}", command_to_binary(&command));
+        println!("Binary representation is {:016b}", command_to_binary(&command));
     }
 
     println!("Done parsing");
