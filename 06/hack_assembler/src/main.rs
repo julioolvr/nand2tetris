@@ -3,6 +3,7 @@ extern crate regex;
 
 use std::fs::File;
 use std::env;
+use std::io::Write;
 use std::io::BufReader;
 
 mod lib;
@@ -13,28 +14,26 @@ fn main() {
     let mut args = env::args();
     args.next(); // Program name
 
-    let filename = args.next().unwrap();
-    let file = File::open(filename).unwrap();
+    let input_filename = args.next().unwrap();
+    let output_filename = args.next().unwrap();
 
-    let parser = Parser::new(BufReader::new(&file));
+    let input_file = File::open(input_filename).unwrap();
 
-    for command in parser.iter() {
-        println!("Parsed command");
+    let parser = Parser::new(BufReader::new(&input_file));
 
-        if let Some(ref symbol) = command.symbol() {
-            println!("Had symbol {}", symbol);
+    let hack_file = parser.iter().fold(String::new(), |acc, command| {
+        if acc == "" {
+            format!("{:016b}", command_to_binary(&command))
+        } else {
+            format!("{}\n{:016b}", acc, command_to_binary(&command))
         }
+    });
 
-        if let Some(ref dest) = command.dest() {
-            println!("Had dest {}", dest);
-        }
+    println!("Done parsing, writing to {}", output_filename);
+    let mut output_file = File::create(output_filename).unwrap();
 
-        if let Some(ref comp) = command.comp() {
-            println!("Had comp {}", comp);
-        }
-
-        println!("Binary representation is {:016b}", command_to_binary(&command));
+    match output_file.write_all(hack_file.as_bytes()) {
+        Ok(_) => println!("Wrote file successfully"),
+        Err(err) => println!("Error writing file, {}", err)
     }
-
-    println!("Done parsing");
 }
