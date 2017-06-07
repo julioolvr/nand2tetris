@@ -4,11 +4,12 @@ extern crate regex;
 use std::fs::File;
 use std::env;
 use std::io::Write;
-use std::io::BufReader;
 
 mod lib;
 use lib::parser::Parser;
+use lib::command::CommandType;
 use lib::code::command_to_binary;
+use lib::symbol_table::SymbolTable;
 
 fn main() {
     let mut args = env::args();
@@ -19,13 +20,36 @@ fn main() {
 
     let input_file = File::open(input_filename).unwrap();
 
-    let parser = Parser::new(BufReader::new(&input_file));
+    let mut parser = Parser::new(&input_file);
 
-    let hack_file = parser.iter().fold(String::new(), |acc, command| {
-        if acc == "" {
-            format!("{:016b}", command_to_binary(&command))
+    // First pass - build the symbols table
+    let mut symbol_table = SymbolTable::new();
+    let mut instruction_index = 0;
+
+    for command in parser.commands() {
+        if command.command_type() == CommandType::LCommand {
+            if let Some(symbol) = command.symbol() {
+                symbol_table.insert(symbol, instruction_index);
+            }
         } else {
-            format!("{}\n{:016b}", acc, command_to_binary(&command))
+            instruction_index += 1;
+        }
+    }
+
+    // Second pass - generate the binary instructions using the symbols table
+    let hack_file = parser.commands().fold(String::new(), |acc, command| {
+        let binary_command = command_to_binary(&command, &mut symbol_table);
+
+        match binary_command {
+            Some(found_command) => {
+                if acc == "" {
+                    format!("{:016b}", found_command)
+                } else {
+                    format!("{}\n{:016b}", acc, found_command)
+                }
+            }
+
+            None => acc
         }
     });
 

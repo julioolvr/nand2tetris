@@ -11,15 +11,17 @@ D=M
 @456
 
 // Check jumps
+(Jumps)
 A=D
 A=D;JEQ
 A=D;JMP
 A=D;JGT
 A=D;JLE
 
-@789
+@someVar
 
 // Check dest
+(Destinations)
 A=D
 D=D
 M=D
@@ -28,7 +30,8 @@ AM=D
 DM=A
 ADM=A
 
-@123
+@otherVar
+@someVar
 
 // Check comp
 A+1

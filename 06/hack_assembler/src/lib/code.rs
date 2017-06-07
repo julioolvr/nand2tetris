@@ -1,19 +1,33 @@
 use lib::command::Command;
 use lib::command::CommandType;
 use lib::command::JumpMnemonic;
+use lib::symbol_table::SymbolTable;
 
-pub fn command_to_binary(command: &Command) -> u16 {
+pub fn command_to_binary(command: &Command, symbol_table: &mut SymbolTable) -> Option<u16> {
   match command.command_type() {
-    CommandType::ACommand => { a_command_to_binary(command) }
-    CommandType::CCommand => { c_command_to_binary(command) }
-    CommandType::LCommand => { 0b0000000000000000 } // TODO: Proper handling of the L command
+    CommandType::ACommand => Some(a_command_to_binary(command, symbol_table)),
+    CommandType::CCommand => Some(c_command_to_binary(command)),
+    CommandType::LCommand => None
   }
 }
 
-fn a_command_to_binary(command: &Command) -> u16 {
+fn a_command_to_binary(command: &Command, symbol_table: &mut SymbolTable) -> u16 {
   match command.symbol() {
-    // TODO: Support non-literal symbol
-    Some(symbol) => { symbol.parse::<u16>().expect("Assuming valid u16 for A command") }
+    Some(symbol) => {
+      match symbol.parse::<u16>() {
+        Ok(number) => number,
+        Err(_) => {
+          // This means that the symbol was a variable.
+          // Either it's already in the symbol table, and I have to use that value
+          // or it isn't, and I have to add it to the table with a new value and use that
+          if !symbol_table.contains_key(&symbol) {
+            symbol_table.append(symbol.clone());
+          }
+
+          *symbol_table.get(&symbol).unwrap() as u16
+        }
+      }
+    }
     // TODO: This shouldn't be possible, so consider returning Result<String> instead to check for errors
     None => { 0b0000000000000000 }
   }
