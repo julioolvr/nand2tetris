@@ -4,6 +4,7 @@ use std::fs::File;
 
 mod lib;
 use lib::parser::Parser;
+use lib::code::command_to_asm;
 
 fn main() {
     let mut args = env::args();
@@ -17,7 +18,7 @@ fn main() {
     let mut parser = Parser::new(&input_file);
 
     for command in parser.commands() {
-        println!("Read line {}", command.get_line());
+        println!("Command {}", command_to_asm(&command));
     }
 
     println!("✅  Done! (WIP)");
