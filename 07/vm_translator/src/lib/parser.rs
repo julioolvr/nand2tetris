@@ -3,7 +3,6 @@ use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Seek;
 use std::io::SeekFrom;
-use std::io::Lines;
 
 pub struct Parser<'a> {
     file: &'a File,
@@ -14,7 +13,7 @@ impl<'a> Parser<'a> {
         Parser { file }
     }
 
-    pub fn lines(&mut self) -> Lines<BufReader<&File>> {
+    pub fn lines(&mut self) -> Vec<String> {
         // Go back to the beginning of the file, in case the cursor advanced earlier
         self.file.seek(SeekFrom::Start(0)).unwrap(); // .unwrap() so it fails on Error
 
@@ -22,6 +21,12 @@ impl<'a> Parser<'a> {
         let buffer = BufReader::new(self.file);
 
         // And iterate over the lines
-        buffer.lines()
+        // TODO: Figure out if there's a way to avoid collecting and return the iterator
+        buffer
+            .lines()
+            .filter_map(|line_result| line_result.ok())
+            .filter(|line| !line.trim().is_empty())
+            .filter(|line| !line.starts_with("//"))
+            .collect()
     }
 }
