@@ -16,8 +16,8 @@ fn main() {
 
     let mut parser = Parser::new(&input_file);
 
-    for line in parser.lines() {
-        println!("Read line {}", line);
+    for command in parser.commands() {
+        println!("Read line {}", command.get_line());
     }
 
     println!("✅  Done! (WIP)");
