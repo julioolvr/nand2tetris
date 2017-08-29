@@ -1,3 +1,4 @@
+extern crate regex;
 use std::env;
 
 use std::fs::File;
@@ -18,7 +19,7 @@ fn main() {
     let mut parser = Parser::new(&input_file);
 
     for command in parser.commands() {
-        println!("Command {}", command_to_asm(&command));
+        println!("{}", command_to_asm(&command));
     }
 
     println!("✅  Done! (WIP)");
