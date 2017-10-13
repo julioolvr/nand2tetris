@@ -1,37 +1,40 @@
-#[derive(PartialEq)]
-pub enum CommandType {
-    ARITHMETIC,
-    PUSH,
-    POP, // LABEL,
-         // GOTO,
-         // IF,
-         // FUNCTION,
-         // RETURN,
-         // CALL
+use lib::command_types::{ArithmeticCommand, PushCommand, PopCommand};
+
+fn build_command(line: String) -> Option<Box<CommandType>> {
+    if ArithmeticCommand::is_a(&line) {
+        Some(Box::new(ArithmeticCommand::new(line)))
+    } else if PushCommand::is_a(&line) {
+        Some(Box::new(PushCommand::new(line)))
+    } else if PopCommand::is_a(&line) {
+        Some(Box::new(PopCommand::new(line)))
+    } else {
+        None
+    }
 }
 
 pub struct Command {
-    line: String,
+    command_implementation: Box<CommandType>,
 }
 
 impl Command {
-    pub fn new(line: String) -> Command {
-        Command { line }
-    }
-
-    pub fn get_line(&self) -> &String {
-        &self.line
-    }
-
-    pub fn command_type(&self) -> CommandType {
-        // TODO: Support other command types
-        if self.line.starts_with("add") || self.line.starts_with("sub") ||
-           self.line.starts_with("neg") {
-            CommandType::ARITHMETIC
-        } else if self.line.starts_with("push") {
-            CommandType::PUSH
+    pub fn new(line: String) -> Result<Command, String> {
+        if let Some(implementation) = build_command(line.clone()) {
+            Ok(Command { command_implementation: implementation })
         } else {
-            CommandType::POP
+            Err(format!("Found invalid line when parsing command:\n`{}`", line))
         }
     }
+
+    pub fn to_asm(&self) -> String {
+        self.command_implementation.to_asm()
+    }
+}
+
+pub trait CommandType {
+    fn to_asm(&self) -> String;
+}
+
+pub trait CommandTypeBuilder {
+    fn new(line: String) -> Self;
+    fn is_a(line: &String) -> bool;
 }

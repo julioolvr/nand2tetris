@@ -29,7 +29,17 @@ impl<'a> Parser<'a> {
             .filter_map(|line_result| line_result.ok())
             .filter(|line| !line.trim().is_empty())
             .filter(|line| !line.starts_with("//"))
-            .map(|line| Command::new(line))
+            .filter_map(|line| {
+                let command = Command::new(line);
+
+                match command {
+                    Ok(command) => Some(command),
+                    Err(err) => {
+                        println!("{}", err);
+                        None
+                    }
+                }
+            })
             .collect()
     }
 }
