@@ -15,7 +15,7 @@ impl CommandTypeBuilder for PushCommand {
 }
 
 impl CommandType for PushCommand {
-    fn to_asm(&self) -> String {
+    fn to_asm(&self, index: usize) -> String {
         let split_line = self.line.split_whitespace().collect::<Vec<&str>>();
         let segment = split_line[1];
 

@@ -13,25 +13,29 @@ fn build_command(line: String) -> Option<Box<CommandType>> {
 }
 
 pub struct Command {
+    index: usize,
     command_implementation: Box<CommandType>,
 }
 
 impl Command {
-    pub fn new(line: String) -> Result<Command, String> {
+    pub fn new(line: String, index: usize) -> Result<Command, String> {
         if let Some(implementation) = build_command(line.clone()) {
-            Ok(Command { command_implementation: implementation })
+            Ok(Command {
+                   index,
+                   command_implementation: implementation,
+               })
         } else {
             Err(format!("Found invalid line when parsing command:\n`{}`", line))
         }
     }
 
     pub fn to_asm(&self) -> String {
-        self.command_implementation.to_asm()
+        self.command_implementation.to_asm(self.index)
     }
 }
 
 pub trait CommandType {
-    fn to_asm(&self) -> String;
+    fn to_asm(&self, index: usize) -> String;
 }
 
 pub trait CommandTypeBuilder {

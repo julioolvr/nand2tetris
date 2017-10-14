@@ -15,7 +15,7 @@ impl CommandTypeBuilder for PopCommand {
 }
 
 impl CommandType for PopCommand {
-    fn to_asm(&self) -> String {
+    fn to_asm(&self, index: usize) -> String {
         String::from("Pop command")
     }
 }

@@ -29,8 +29,9 @@ impl<'a> Parser<'a> {
             .filter_map(|line_result| line_result.ok())
             .filter(|line| !line.trim().is_empty())
             .filter(|line| !line.starts_with("//"))
-            .filter_map(|line| {
-                let command = Command::new(line);
+            .enumerate()
+            .filter_map(|(index, line)| {
+                let command = Command::new(line, index);
 
                 match command {
                     Ok(command) => Some(command),
