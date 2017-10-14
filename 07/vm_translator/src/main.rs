@@ -32,7 +32,7 @@ fn main() {
             if acc.is_empty() {
                 command.to_asm()
             } else {
-                format!("{}\n{}", acc, command.to_asm())
+                format!("{}\n\n{}", acc, command.to_asm())
             }
         });
 
