@@ -3,6 +3,7 @@ use std::env;
 
 use std::fs::File;
 use std::io::Write;
+use std::path::Path;
 
 mod lib;
 use lib::parser::Parser;
@@ -22,7 +23,12 @@ fn main() {
 
     println!("🛠  Compiling {}", input_name);
 
-    let mut parser = Parser::new(&input_file);
+    let mut parser = Parser::new(&input_file,
+                                 String::from(Path::new(&input_name)
+                                                  .file_name()
+                                                  .expect("Only single files allowed for now")
+                                                  .to_str()
+                                                  .expect("Filename must be valid UTF-8")));
 
     let asm_file_contents = parser
         .commands()

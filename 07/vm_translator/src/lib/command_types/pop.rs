@@ -1,4 +1,4 @@
-use lib::command::{CommandType, CommandTypeBuilder};
+use lib::command::{CommandType, CommandTypeBuilder, Context};
 
 pub struct PopCommand {
     line: String,
@@ -15,7 +15,7 @@ impl CommandTypeBuilder for PopCommand {
 }
 
 impl CommandType for PopCommand {
-    fn to_asm(&self, _index: usize) -> String {
+    fn to_asm(&self, context: &Context) -> String {
         let split_line = self.line.split_whitespace().collect::<Vec<&str>>();
         let segment = split_line[1];
         let value = split_line[2];
@@ -79,6 +79,14 @@ impl CommandType for PopCommand {
                     "D=A", // Move it to the D register
                     "@3", // (3+0) stores the pointer to THIS, (3+1) the pointer to THAT
                     "D=A+D" // Put the memory address index + 3 in D
+                ]
+                        .join("\n")
+            }
+            "static" => {
+                vec![
+                    // Create a variable for this static segment
+                    format!("@{}.{}", context.filename, value).as_str(),
+                    "D=A" // Put the memory address in D
                 ]
                         .join("\n")
             }

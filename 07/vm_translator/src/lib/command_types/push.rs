@@ -1,4 +1,4 @@
-use lib::command::{CommandType, CommandTypeBuilder};
+use lib::command::{CommandType, CommandTypeBuilder, Context};
 
 pub struct PushCommand {
     line: String,
@@ -15,7 +15,7 @@ impl CommandTypeBuilder for PushCommand {
 }
 
 impl CommandType for PushCommand {
-    fn to_asm(&self, _index: usize) -> String {
+    fn to_asm(&self, context: &Context) -> String {
         let split_line = self.line.split_whitespace().collect::<Vec<&str>>();
         let segment = split_line[1];
         let value = split_line[2];
@@ -85,6 +85,14 @@ impl CommandType for PushCommand {
                     "@3", // (3+0) stores the pointer to THIS, (3+1) the pointer to THAT
                     "A=A+D", // Put the memory address stored in 3 + the index in A
                     "D=M" // Put the value from the new memory address in the D register
+                ]
+                        .join("\n")
+            }
+            "static" => {
+                vec![
+                    // Lookup a variable for this static member
+                    format!("@{}.{}", context.filename, value).as_str(),
+                    "D=M", // Store its value in the D register
                 ]
                         .join("\n")
             }

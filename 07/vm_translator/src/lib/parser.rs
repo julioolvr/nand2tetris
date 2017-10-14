@@ -8,11 +8,12 @@ use lib::command::Command;
 
 pub struct Parser<'a> {
     file: &'a File,
+    filename: String,
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(file: &'a File) -> Parser<'a> {
-        Parser { file }
+    pub fn new(file: &'a File, filename: String) -> Parser<'a> {
+        Parser { file, filename }
     }
 
     pub fn commands(&mut self) -> Vec<Command> {
@@ -31,7 +32,7 @@ impl<'a> Parser<'a> {
             .filter(|line| !line.starts_with("//"))
             .enumerate()
             .filter_map(|(index, line)| {
-                let command = Command::new(line, index);
+                let command = Command::new(line, self.filename.clone(), index);
 
                 match command {
                     Ok(command) => Some(command),
