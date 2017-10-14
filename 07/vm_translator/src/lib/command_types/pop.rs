@@ -73,6 +73,15 @@ impl CommandType for PopCommand {
                 ]
                         .join("\n")
             }
+            "pointer" => {
+                vec![
+                    format!("@{}", value).as_str(), // Set the index on the A register
+                    "D=A", // Move it to the D register
+                    "@3", // (3+0) stores the pointer to THIS, (3+1) the pointer to THAT
+                    "D=A+D" // Put the memory address index + 3 in D
+                ]
+                        .join("\n")
+            }
             _ => unimplemented!(),
         };
 

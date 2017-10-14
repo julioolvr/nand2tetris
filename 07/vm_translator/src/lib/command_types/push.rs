@@ -78,6 +78,16 @@ impl CommandType for PushCommand {
                 ]
                         .join("\n")
             }
+            "pointer" => {
+                vec![
+                    format!("@{}", value).as_str(), // Set the value on the A register
+                    "D=A", // Move it to the D register
+                    "@3", // (3+0) stores the pointer to THIS, (3+1) the pointer to THAT
+                    "A=A+D", // Put the memory address stored in 3 + the index in A
+                    "D=M" // Put the value from the new memory address in the D register
+                ]
+                        .join("\n")
+            }
             _ => unimplemented!(),
         };
 
@@ -85,7 +95,7 @@ impl CommandType for PushCommand {
           data_load.as_str(),
           "@SP", // Load the address of @SP in A
           "A=M", // Load the value stored in @SP in A
-          "M=D", // Store the constant value from D where @SP points to
+          "M=D", // Store the value from D where @SP points to
           "A=A+1", // Increase the value stored in A (the memory address stored in @SP)
           "D=A", // Save the new memory address in D
           "@SP", // Load the address of @SP in A again and...
